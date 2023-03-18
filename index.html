@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Multiplayer Athletics Game</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="icon" href="game.png">
+  </head>
+  <body>
+    <header>
+      <h1>Multiplayer Athletics Game</h1>
+      <button id="start-button">Start Game</button>
+    </header>
+    <main>
+      <section id="game-board">
+        <h2>Events</h2>
+        <div class="event">
+          <h3>100M Race</h3>
+          <button class="start-event-button">Start Race</button>
+          <div class="result" style="display: none;"></div>
+        </div>
+        <div class="event">
+          <h3>Long Jump</h3>
+          <button class="start-event-button">Start Jump</button>
+          <div class="result" style="display: none;"></div>
+        </div>
+        <div class="event">
+          <h3>High Jump</h3>
+          <button class="start-event-button">Start Jump</button>
+          <div class="result" style="display: none;"></div>
+        </div>
+      </section>
+      <hr>
+      <section id="scoreboard">
+        <h2>Scoreboard</h2>
+        <hr>
+        <table>
+          <thead>
+            <tr>
+              <th>Player</th>
+              <th>Score</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Red</td>
+              <td id="red-score">0</td>
+            </tr>
+            <tr>
+              <td>Blue</td>
+              <td id="blue-score">0</td>
+            </tr>
+            <tr>
+              <td>Green</td>
+              <td id="green-score">0</td>
+            </tr>
+            <tr>
+              <td>Yellow</td>
+              <td id="yellow-score">0</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+    </main>
+
+    <script>
+         // Define variables for DOM elements
+            const startButton = document.getElementById("start-button");
+            const redScore = document.getElementById("red-score");
+            const blueScore = document.getElementById("blue-score");
+            const greenScore = document.getElementById("green-score");
+            const yellowScore = document.getElementById("yellow-score");
+            const raceButtons = document.querySelectorAll(".start-event-button");
+
+            // Define score object
+            const score = { red: 0, blue: 0, green: 0, yellow: 0 };
+
+            // Add event listener to the start game button
+            startButton.addEventListener("click", () => {
+            // Call the OpeningCeremony function and pass the score object and the updateScoreboard function
+            OpeningCeremony(score, updateScoreboard);
+            });
+
+            // Define the updateScoreboard function
+            function updateScoreboard(scoreObj) {
+            // Update the score in the scoreboard table
+            redScore.textContent = scoreObj.red;
+            blueScore.textContent = scoreObj.blue;
+            greenScore.textContent = scoreObj.green;
+            yellowScore.textContent = scoreObj.yellow;
+            }
+
+            // Define the Race100M function
+            function Race100M(scoreObj, callbackFnc) {
+            console.log("Starting Race100M");
+            // Generate random times for each color between 10 to 15 seconds
+            const times = ["red", "blue", "green", "yellow"].map(
+                color => Math.floor(Math.random() * 6) + 10
+            );
+
+            // Find the color with the least time and give them 50 points
+            // Find the color with the second least time and give them 25 points
+            const [firstPlace, secondPlace] = times
+                .map((time, index) => [time, index])
+                .sort(([t1], [t2]) => t1 - t2)
+                .map(([, index]) => ["red", "blue", "green", "yellow"][index])
+                .slice(0, 2);
+            scoreObj[firstPlace] += 50;
+            scoreObj[secondPlace] += 25;
+
+            // Call the callback function and pass the updated score object
+            callbackFnc(scoreObj);
+            }
+
+            // Add event listeners to the race buttons
+            raceButtons.forEach(button => {
+            button.addEventListener("click", () => {
+                // Call the Race100M function and pass the score object and the updateScoreboard function
+                Race100M(score, updateScoreboard);
+            });
+            });
+    </script>
+  </body>
+</html>
